@@ -1,0 +1,314 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: dark;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  user-select: none;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: transparent;
+  overflow: hidden;
+}
+
+/* --- Floating control pill ---------------------------------------------- */
+
+/* Wrapper fills the host view and floats the pill just below the top edge,
+   leaving room around it for the drop shadow. */
+.pill-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 8px;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(42, 42, 52, 0.96);
+  border-radius: 999px;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(12px);
+  cursor: grab;
+}
+
+/* While a drag is in progress the whole pill shows the closed-hand cursor. */
+body.dragging,
+body.dragging .pill,
+body.dragging .pill-grip {
+  cursor: grabbing;
+}
+
+.pill-grip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 28px;
+  color: #5b5b66;
+  cursor: grab;
+}
+
+.pill-grip:hover {
+  color: #9a9aa3;
+}
+
+.pill-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.pill-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.pill-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #b4b4be;
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.pill-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f2f2f5;
+}
+
+.pill-btn.active {
+  background: rgba(122, 184, 255, 0.16);
+  color: #7ab8ff;
+}
+
+.pill-btn-close:hover {
+  background: rgba(255, 122, 133, 0.16);
+  color: #ff7a85;
+}
+
+/* --- Media transport bar ------------------------------------------------- */
+
+.bar {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 10px;
+  background: rgba(20, 20, 26, 0.94);
+  border-radius: 999px;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  color: #d6d6dd;
+}
+
+.bar-loading {
+  opacity: 0.6;
+}
+
+.bar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #d6d6dd;
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.bar-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.bar-time {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: #9a9aa3;
+  min-width: 30px;
+  text-align: center;
+}
+
+.bar-time-total {
+  color: #6f6f79;
+}
+
+/* Range inputs: a thin track filled up to --pct with a small thumb. */
+.bar-seek,
+.bar-vol {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #7ab8ff 0%,
+    #7ab8ff var(--pct, 0%),
+    rgba(255, 255, 255, 0.16) var(--pct, 0%),
+    rgba(255, 255, 255, 0.16) 100%
+  );
+  cursor: pointer;
+  outline: none;
+}
+
+.bar-seek {
+  flex: 1 1 auto;
+}
+
+.bar-vol {
+  flex: 0 0 64px;
+}
+
+.bar-seek::-webkit-slider-thumb,
+.bar-vol::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.bar-seek:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* --- Tooltips ------------------------------------------------------------ */
+
+.tip {
+  position: relative;
+}
+
+.tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-2px);
+  padding: 4px 8px;
+  background: rgba(28, 28, 34, 0.98);
+  color: #e8e8ec;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+}
+
+.tip:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Suppress tooltips mid-drag so they don't flicker while moving the window. */
+body.dragging .tip::after {
+  opacity: 0;
+}
+
+/* --- Open-link box (Spotlight-style) -------------------------------------- */
+
+.open-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px;
+  padding: 0 16px;
+  height: 56px;
+  border-radius: 14px;
+  background: rgba(22, 22, 27, 0.96);
+  border: 1px solid #2b2b33;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.open-box.invalid {
+  border-color: #a33d46;
+}
+
+.open-glyph {
+  font-size: 14px;
+  color: #7ab8ff;
+}
+
+.open-box input {
+  flex: 1;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #e8e8ec;
+  font-size: 15px;
+}
+
+.open-box input::placeholder {
+  color: #5b5b64;
+}
+
+.open-error {
+  font-size: 11px;
+  color: #ff7a85;
+  white-space: nowrap;
+}
+
+/* --- Direct-media video page ---------------------------------------------- */
+
+.video-page {
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  display: flex;
+}
+
+.video-page video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
