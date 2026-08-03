@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-/** Spotlight-style floating input: paste a link, Enter to play, Esc to dismiss. */
+/** Spotlight-style pill input: paste a link, Enter to play, Esc to dismiss. */
 export function OpenLink(): React.JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null)
   const [value, setValue] = useState('')
@@ -8,13 +8,13 @@ export function OpenLink(): React.JSX.Element {
 
   useEffect(() => {
     inputRef.current?.focus()
-    return window.api.onInvalidLink(() => setInvalid(true))
   }, [])
 
-  const onKeyDown = (e: React.KeyboardEvent): void => {
+  const onKeyDown = async (e: React.KeyboardEvent): Promise<void> => {
     if (e.key === 'Enter' && value.trim()) {
-      window.api.submitLink(value.trim())
-      setValue('')
+      const ok = await window.api.submitLink(value.trim())
+      if (ok) setValue('')
+      else setInvalid(true)
     } else if (e.key === 'Escape') {
       setValue('')
       window.api.cancelOpen()
@@ -22,20 +22,19 @@ export function OpenLink(): React.JSX.Element {
   }
 
   return (
-    <div className={`open-box${invalid ? ' invalid' : ''}`}>
-      <span className="open-glyph">▶</span>
+    <div className="open-wrap">
       <input
         ref={inputRef}
+        className={`open-pill${invalid ? ' invalid' : ''}`}
         value={value}
-        placeholder="Paste a video link…"
+        placeholder={invalid ? 'Not a valid link' : 'Paste a video link…'}
         spellCheck={false}
         onChange={(e) => {
           setValue(e.target.value)
           setInvalid(false)
         }}
-        onKeyDown={onKeyDown}
+        onKeyDown={(e) => void onKeyDown(e)}
       />
-      {invalid && <span className="open-error">not a valid link</span>}
     </div>
   )
 }

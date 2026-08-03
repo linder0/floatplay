@@ -2,13 +2,26 @@
   "name": "floatplay",
   "version": "0.1.0",
   "description": "Paste a link, watch it in a floating always-on-top mini player over any app.",
-  "private": true,
+  "license": "MIT",
+  "author": "linda xue",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linder0/floatplay.git"
+  },
+  "bugs": {
+    "url": "https://github.com/linder0/floatplay/issues"
+  },
+  "homepage": "https://github.com/linder0/floatplay#readme",
   "main": "out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "start": "electron-vite preview",
-    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json"
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "build:mac": "npm run build && electron-builder --mac --config electron-builder.yml",
+    "build:win": "npm run build && electron-builder --win --config electron-builder.yml",
+    "build:linux": "npm run build && electron-builder --linux --config electron-builder.yml",
+    "dist": "npm run build && electron-builder --config electron-builder.yml"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
@@ -16,6 +29,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.2.0",
     "electron": "^43.1.1",
+    "electron-builder": "^26.15.3",
     "electron-vite": "^5.0.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

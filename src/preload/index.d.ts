@@ -1,10 +1,4 @@
-export interface MediaState {
-  t: number
-  d: number
-  playing: boolean
-  vol: number
-  muted: boolean
-}
+export type ResizeEdge = 'left' | 'right' | 'bottom'
 
 export interface FloatPlayApi {
   closePlayer: () => void
@@ -14,17 +8,15 @@ export interface FloatPlayApi {
   reloadPlayer: () => void
   startDrag: () => void
   endDrag: () => void
-  submitLink: (url: string) => void
+  startResize: (edge: ResizeEdge) => void
+  endResize: () => void
+  openLink: () => void
+  submitLink: (url: string) => Promise<boolean>
   cancelOpen: () => void
-  onInvalidLink: (cb: () => void) => () => void
   onPlayerState: (
     cb: (state: { ghost: boolean; passive: boolean; hidden: boolean }) => void
   ) => () => void
-  playPause: () => void
-  seek: (seconds: number) => void
-  setVolume: (volume: number) => void
-  toggleMute: () => void
-  onMediaState: (cb: (state: MediaState | null) => void) => () => void
+  onResizing: (cb: (resizing: boolean) => void) => () => void
 }
 
 declare global {

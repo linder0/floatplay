@@ -8,6 +8,11 @@
   color-scheme: dark;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   user-select: none;
+  /* Portfolio black/white palette */
+  --ink: #1a1a1a;
+  --paper: #fafafa;
+  --dim: #a0a0a0;
+  --mute: #2a2a2a;
 }
 
 html,
@@ -31,21 +36,91 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 8px;
+  padding-top: 4px;
+  opacity: 1;
+  transition: opacity 0.16s ease;
+}
+
+.pill-wrap.is-resizing {
+  opacity: 0.18;
+  pointer-events: none;
 }
 
 .pill {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px;
-  background: rgba(42, 42, 52, 0.96);
+  height: 28px;
+  padding: 3px;
+  background: rgba(26, 26, 26, 0.96);
   border-radius: 999px;
-  box-shadow:
-    0 6px 18px rgba(0, 0, 0, 0.45),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(12px);
   cursor: grab;
+  overflow: hidden;
+  transition:
+    width 0.34s cubic-bezier(0.32, 0.72, 0, 1),
+    padding 0.34s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: width;
+}
+
+.pill-linking {
+  padding: 3px 14px;
+  cursor: text;
+}
+
+.pill-chrome {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 0.16s ease,
+    transform 0.34s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.pill-chrome.is-hidden {
+  opacity: 0;
+  transform: scale(0.96);
+  pointer-events: none;
+  position: absolute;
+  left: 3px;
+  top: 3px;
+}
+
+.pill-link {
+  position: absolute;
+  inset: 0 14px;
+  width: auto;
+  height: auto;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--paper);
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(6px);
+  transition:
+    opacity 0.2s ease 0.1s,
+    transform 0.34s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.pill-link.is-shown {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.pill-link::placeholder {
+  color: var(--dim);
+}
+
+.pill-link.invalid::placeholder {
+  color: #c4c4c4;
 }
 
 /* While a drag is in progress the whole pill shows the closed-hand cursor. */
@@ -59,38 +134,38 @@ body.dragging .pill-grip {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 28px;
-  color: #5b5b66;
+  width: 16px;
+  height: 22px;
+  color: #555555;
   cursor: grab;
 }
 
 .pill-grip:hover {
-  color: #9a9aa3;
+  color: var(--dim);
 }
 
 .pill-divider {
   width: 1px;
-  height: 16px;
-  background: rgba(255, 255, 255, 0.09);
+  height: 12px;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .pill-actions {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 1px;
 }
 
 .pill-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   border: none;
   border-radius: 999px;
   background: transparent;
-  color: #b4b4be;
+  color: #b0b0b0;
   cursor: pointer;
   transition:
     background-color 0.12s ease,
@@ -99,120 +174,17 @@ body.dragging .pill-grip {
 
 .pill-btn:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: #f2f2f5;
+  color: var(--paper);
 }
 
 .pill-btn.active {
-  background: rgba(122, 184, 255, 0.16);
-  color: #7ab8ff;
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--paper);
 }
 
 .pill-btn-close:hover {
   background: rgba(255, 122, 133, 0.16);
   color: #ff7a85;
-}
-
-/* --- Media transport bar ------------------------------------------------- */
-
-.bar {
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 36px;
-  padding: 0 10px;
-  background: rgba(20, 20, 26, 0.94);
-  border-radius: 999px;
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.5),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(12px);
-  color: #d6d6dd;
-}
-
-.bar-loading {
-  opacity: 0.6;
-}
-
-.bar-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  width: 26px;
-  height: 26px;
-  border: none;
-  border-radius: 999px;
-  background: transparent;
-  color: #d6d6dd;
-  cursor: pointer;
-  transition:
-    background-color 0.12s ease,
-    color 0.12s ease;
-}
-
-.bar-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-}
-
-.bar-time {
-  flex: 0 0 auto;
-  font-size: 11px;
-  font-variant-numeric: tabular-nums;
-  color: #9a9aa3;
-  min-width: 30px;
-  text-align: center;
-}
-
-.bar-time-total {
-  color: #6f6f79;
-}
-
-/* Range inputs: a thin track filled up to --pct with a small thumb. */
-.bar-seek,
-.bar-vol {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(
-    to right,
-    #7ab8ff 0%,
-    #7ab8ff var(--pct, 0%),
-    rgba(255, 255, 255, 0.16) var(--pct, 0%),
-    rgba(255, 255, 255, 0.16) 100%
-  );
-  cursor: pointer;
-  outline: none;
-}
-
-.bar-seek {
-  flex: 1 1 auto;
-}
-
-.bar-vol {
-  flex: 0 0 64px;
-}
-
-.bar-seek::-webkit-slider-thumb,
-.bar-vol::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-}
-
-.bar-seek:disabled {
-  opacity: 0.5;
-  cursor: default;
 }
 
 /* --- Tooltips ------------------------------------------------------------ */
@@ -228,14 +200,14 @@ body.dragging .pill-grip {
   left: 50%;
   transform: translateX(-50%) translateY(-2px);
   padding: 4px 8px;
-  background: rgba(28, 28, 34, 0.98);
-  color: #e8e8ec;
+  background: var(--ink);
+  color: var(--paper);
   font-size: 11px;
   font-weight: 500;
   line-height: 1;
   white-space: nowrap;
   border-radius: 6px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
   opacity: 0;
   pointer-events: none;
   transition:
@@ -253,49 +225,117 @@ body.dragging .tip::after {
   opacity: 0;
 }
 
-/* --- Open-link box (Spotlight-style) -------------------------------------- */
+/* --- Resize handles (hover chrome) --------------------------------------- */
 
-.open-box {
+.resize-frame {
   position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.resize-hit {
+  position: absolute;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.resize-left,
+.resize-right {
+  /* Align with the video pane (below the pill strip), not the full window. */
+  top: 34px;
+  bottom: 12px;
+  width: 12px;
+  cursor: ew-resize;
+}
+
+.resize-left {
+  left: 0;
+}
+
+.resize-right {
+  right: 0;
+}
+
+.resize-bottom {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 12px;
+  cursor: ns-resize;
+}
+
+/* Little grip marks — quiet until the hit target is hovered. */
+.resize-grip {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  opacity: 0.55;
+  transition:
+    opacity 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.resize-left .resize-grip,
+.resize-right .resize-grip {
+  top: 50%;
+  width: 3px;
+  height: 28px;
+  transform: translateY(-50%);
+}
+
+/* Keep marks in the exposed gutter outside the video view. */
+.resize-left .resize-grip {
+  left: 4px;
+}
+
+.resize-right .resize-grip {
+  right: 4px;
+}
+
+.resize-bottom .resize-grip {
+  left: 50%;
+  bottom: 3px;
+  width: 28px;
+  height: 3px;
+  transform: translateX(-50%);
+}
+
+.resize-hit:hover .resize-grip {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* --- Open-link pill (Spotlight-style) ------------------------------------ */
+
+.open-wrap {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 12px;
-  padding: 0 16px;
-  height: 56px;
-  border-radius: 14px;
-  background: rgba(22, 22, 27, 0.96);
-  border: 1px solid #2b2b33;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  padding: 8px 12px;
 }
 
-.open-box.invalid {
-  border-color: #a33d46;
-}
-
-.open-glyph {
-  font-size: 14px;
-  color: #7ab8ff;
-}
-
-.open-box input {
-  flex: 1;
-  height: 100%;
+.open-pill {
+  width: 100%;
+  height: 48px;
+  padding: 0 20px;
   border: none;
   outline: none;
-  background: transparent;
-  color: #e8e8ec;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
   font-size: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
 }
 
-.open-box input::placeholder {
-  color: #5b5b64;
+.open-pill::placeholder {
+  color: var(--dim);
 }
 
-.open-error {
-  font-size: 11px;
-  color: #ff7a85;
-  white-space: nowrap;
+.open-pill.invalid::placeholder {
+  color: #c4c4c4;
 }
 
 /* --- Direct-media video page ---------------------------------------------- */

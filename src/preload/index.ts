@@ -1,12 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
-interface MediaState {
-  t: number
-  d: number
-  playing: boolean
-  vol: number
-  muted: boolean
-}
+export type ResizeEdge = 'left' | 'right' | 'bottom'
 
 contextBridge.exposeInMainWorld('api', {
   closePlayer: () => ipcRenderer.send('player:close'),
@@ -16,12 +10,11 @@ contextBridge.exposeInMainWorld('api', {
   reloadPlayer: () => ipcRenderer.send('player:reload'),
   startDrag: () => ipcRenderer.send('player:drag-start'),
   endDrag: () => ipcRenderer.send('player:drag-end'),
-  submitLink: (url: string) => ipcRenderer.send('open:submit', url),
+  startResize: (edge: ResizeEdge) => ipcRenderer.send('player:resize-start', edge),
+  endResize: () => ipcRenderer.send('player:resize-end'),
+  openLink: () => ipcRenderer.send('open:show'),
+  submitLink: (url: string) => ipcRenderer.invoke('open:submit', url) as Promise<boolean>,
   cancelOpen: () => ipcRenderer.send('open:cancel'),
-  onInvalidLink: (cb: () => void) => {
-    ipcRenderer.on('open:invalid', cb)
-    return () => ipcRenderer.removeListener('open:invalid', cb)
-  },
   onPlayerState: (cb: (state: { ghost: boolean; passive: boolean; hidden: boolean }) => void) => {
     const handler = (
       _e: unknown,
@@ -30,13 +23,9 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.on('player:state', handler)
     return () => ipcRenderer.removeListener('player:state', handler)
   },
-  playPause: () => ipcRenderer.send('media:playpause'),
-  seek: (seconds: number) => ipcRenderer.send('media:seek', seconds),
-  setVolume: (volume: number) => ipcRenderer.send('media:volume', volume),
-  toggleMute: () => ipcRenderer.send('media:mute'),
-  onMediaState: (cb: (state: MediaState | null) => void) => {
-    const handler = (_e: unknown, state: MediaState | null): void => cb(state)
-    ipcRenderer.on('media:state', handler)
-    return () => ipcRenderer.removeListener('media:state', handler)
+  onResizing: (cb: (resizing: boolean) => void) => {
+    const handler = (_e: unknown, resizing: boolean): void => cb(resizing)
+    ipcRenderer.on('player:resizing', handler)
+    return () => ipcRenderer.removeListener('player:resizing', handler)
   }
 })

@@ -1,0 +1,39 @@
+appId: app.floatplay.desktop
+productName: FloatPlay
+copyright: Copyright © 2026 linda xue
+directories:
+  buildResources: build
+  output: dist
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,CHANGELOG.md,README.md,CONTRIBUTING.md,CODE_OF_CONDUCT.md,LICENSE}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!**/*.tsbuildinfo'
+  - '!.github/*'
+npmRebuild: false
+mac:
+  category: public.app-category.entertainment
+  target:
+    - dmg
+    - zip
+  extendInfo:
+    LSUIElement: true
+  artifactName: ${productName}-${version}-${arch}.${ext}
+dmg:
+  artifactName: ${productName}-${version}-${arch}.${ext}
+win:
+  target:
+    - nsis
+  artifactName: ${productName}-${version}-setup.${ext}
+nsis:
+  oneClick: true
+  perMachine: false
+  shortcutName: FloatPlay
+linux:
+  target:
+    - AppImage
+  category: AudioVideo
+  artifactName: ${productName}-${version}.${ext}

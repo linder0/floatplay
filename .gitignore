@@ -4,3 +4,11 @@ dist/
 *.log
 *.tsbuildinfo
 .DS_Store
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.key
+.vscode/
+.idea/
